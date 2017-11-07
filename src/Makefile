@@ -6,7 +6,7 @@
 #    By: adubedat <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/04/23 17:07:31 by adubedat          #+#    #+#              #
-#    Updated: 2017/09/20 17:39:11 by adubedat         ###   ########.fr        #
+#    Updated: 2017/11/07 17:20:12 by adubedat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,7 +54,7 @@ $(DST):
 	printf "\033[0m\n"
 
 $(ROOT)/libft/libft.a:
-	make -C $(ROOT) libft/libft.a
+	make -C $(ROOT) libft.a
 
 clean:
 	printf "\e[36m"

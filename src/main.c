@@ -1,3 +1,3 @@
-int getuid() {
-	return(0);
+int main() {
+	malloc(15);
 }
