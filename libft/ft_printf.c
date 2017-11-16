@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/28 17:21:37 by adubedat          #+#    #+#             */
-/*   Updated: 2016/05/11 20:20:05 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/16 15:55:16 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,11 @@ char	*get_param(const char *str, int *i, char *c, char *param)
 	if (str[*i] == '\0')
 		return (NULL);
 	*c = str[*i];
-	if (!(param = (char*)malloc(sizeof(char) * (*i - j) + 1)))
+	if (!(param = (char*)malloc(sizeof(char) * (*i - j + 2))))
+	{
+		printf("%d %d\n", *i, j);
 		return (NULL);
+	}
 	while (j <= *i)
 	{
 		param[k] = str[j];

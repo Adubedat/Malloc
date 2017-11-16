@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/31 20:53:09 by adubedat          #+#    #+#             */
-/*   Updated: 2016/01/02 21:50:02 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/16 18:15:28 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,13 @@ char			*ft_itoa_base_ulli(unsigned long long int value, int base,
 	if (value == 0)
 	{
 		str[0] = '0';
+		free(b);
 		return (str);
 	}
 	len--;
 	while (value != 0)
 	{
-		str[len] = b[value % base];
-		len--;
+		str[len--] = b[value % base];
 		value /= base;
 	}
 	free(b);

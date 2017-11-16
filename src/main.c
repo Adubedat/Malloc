@@ -1,3 +1,6 @@
+#include "malloc.h"
+
 int main() {
-	malloc(15);
+	my_malloc(10);
+	return (0);
 }

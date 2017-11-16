@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/23 13:22:43 by adubedat          #+#    #+#             */
-/*   Updated: 2016/04/18 20:15:47 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/16 17:55:27 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,5 +109,6 @@ int					ft_atoi_base(const char *str, int base);
 char				*ft_putwchar(wint_t c);
 char				*ft_putwstr(wchar_t *str, int precision);
 char				*ft_strjoin_free_both(char const *s1, char const *s2);
+void				ft_hexdump(void *memory, int len);
 
 #endif
