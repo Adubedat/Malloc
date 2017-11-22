@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:04:48 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/16 17:54:53 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/22 18:12:30 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,6 @@
 
 # define TINY_SIZE	64
 # define SMALL_SIZE 4096
-
-# define TINY_MMAP	8192
-# define SMALL_MMAP	413696
 
 # define CANARY		0xDEADBEAF
 # include <unistd.h>
@@ -30,12 +27,10 @@ typedef enum					e_type
 	LARGE
 }								t_type;
 
-typedef struct					s_tiny_header
+typedef struct					s_block_list
 {
-		int						canary;
-		unsigned char			size;
-		unsigned char			free;
-}								t_tiny_header;
+		struct s_block_list		*next;
+}								t_block_list;
 
 typedef struct					s_small_header
 {
@@ -53,17 +48,18 @@ typedef struct					s_large_header
 
 typedef struct					s_global_header
 {
-		int						canary;
-		t_tiny_header			*tiny;
-		t_small_header			*small;
-		t_large_header			*large;
+		t_block_list			*tiny;
+		t_block_list			*small;
+		t_block_list			*large;
 		size_t					tiny_size;
 		size_t					small_size;
-		size_t					large_size;
 }								t_global_header;
 
+void	*my_malloc(size_t size);
 t_type	get_type(size_t size);
 void	init_global_memory(void);
-void	*get_free_space(size_t size, t_type type);
+void	*get_free_space_tiny(size_t size, t_block_list *begin,
+		size_t info_size);
+void	init_global_memory(void);
 
 #endif

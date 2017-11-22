@@ -6,7 +6,7 @@
 #    By: adubedat <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/04/23 17:07:31 by adubedat          #+#    #+#              #
-#    Updated: 2017/11/16 17:54:48 by adubedat         ###   ########.fr        #
+#    Updated: 2017/11/17 15:15:52 by adubedat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,8 @@ LDLIBS = -lft
 
 SRC_NAME =	main.c \
 			malloc.c \
+			tiny.c \
+			small.c \
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 
