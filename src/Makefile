@@ -6,7 +6,7 @@
 #    By: adubedat <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/04/23 17:07:31 by adubedat          #+#    #+#              #
-#    Updated: 2017/11/17 15:15:52 by adubedat         ###   ########.fr        #
+#    Updated: 2017/11/24 19:06:39 by adubedat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ SRC_NAME =	main.c \
 			malloc.c \
 			tiny.c \
 			small.c \
+			large.c \
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 

@@ -5,16 +5,25 @@ int main() {
 	char	*memory;
 	char	*tmp;
 	int		i = 0;
+	int		j = 0;
 
-	memory = (char*)my_malloc(64);
+	if ((memory = (char*)my_malloc(4097)) == NULL)
+		printf("malloc failed\n");
 	memory = ft_strcpy(memory, "ttttttttttttttttestestestestestestestestestestet");
 	tmp = memory;
-	while (i < 150)
+	while (i < 107)
 	{
-		memory = (char*)my_malloc(64);
-		memory = ft_strcpy(memory, "ttttttttttttttttestestestestestestestestestestettt");
+		j = 0;
+		memory = (char*)my_malloc(4097);
+		while (j < 4097)
+		{
+			memory[j] = 'X';
+			j++;
+		}
 		i++;
+		ft_hexdump(memory - 8, 8192);
 	}
-	ft_hexdump(tmp, 8136);
+	memory = (char*)my_malloc(33);
+	memory = ft_strcpy(memory, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 	return (0);
 }

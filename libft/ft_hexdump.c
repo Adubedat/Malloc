@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/16 16:58:15 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/16 17:56:14 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/24 15:21:10 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ void	ft_hexdump(void *memory, int len)
 	int				space;
 
 	i = 0;
+	if (!memory)
+		return ;
 	byte = (unsigned char*)memory;
 	ft_printf("%p:", &byte[i]);
 	while (i < len)

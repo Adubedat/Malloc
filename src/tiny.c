@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/17 15:11:26 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/22 18:15:12 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/24 18:25:55 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,17 @@ void			expand_tiny(void)
 	void			*new_memory;
 
 	global = (t_global_header*)g_global_memory;
-	new_memory = mmap(0, global->tiny_size, PROT_READ | PROT_WRITE,
-		MAP_ANON | MAP_PRIVATE, -1, 0);
+	if ((new_memory = mmap(0, global->tiny_size, PROT_READ | PROT_WRITE,
+		MAP_ANON | MAP_PRIVATE, -1, 0)) == MAP_FAILED)
+		return ;
 	temp = global->tiny;
 	while (temp->next != NULL)
 		temp = temp->next;
 	temp->next = (t_block_list*)new_memory;
 	temp->next->next = NULL;
-	new_header = (t_small_header*)(new_memory + sizeof(t_small_header));
+	new_header = (t_small_header*)(new_memory + sizeof(t_block_list));
 	new_header->canary = CANARY;
-	new_header->size = global->tiny_size - sizeof(new_header) - sizeof(temp);
+	new_header->size = global->tiny_size - sizeof(*new_header) - sizeof(*temp);
 	new_header->free = 1;
 }
 
@@ -43,11 +44,11 @@ t_small_header	*cut_block(t_small_header *header, size_t size)
 	void			*temp;
 
 	temp = (void*)header;
-	if (header->size > (size + sizeof(header)))
+	if (header->size > (size + sizeof(*header)))
 	{
-		new_header = (t_small_header*)(temp + sizeof(header) + size);
+		new_header = (t_small_header*)(temp + sizeof(*header) + size);
 		new_header->canary = CANARY;
-		new_header->size = header->size - size - sizeof(header);
+		new_header->size = header->size - size - sizeof(*header);
 		new_header->free = 1;
 		header->size = size;
 	}
@@ -63,6 +64,8 @@ void			*get_free_space_tiny(size_t size, t_block_list *begin,
 	unsigned short	current_place;
 
 	current_place = 0;
+	if (begin == NULL)
+		return (NULL);
 	global = (t_global_header*)g_global_memory;
 	total_size = global->tiny_size - info_size;
 	header = (t_small_header*)(begin + 1);
@@ -70,14 +73,14 @@ void			*get_free_space_tiny(size_t size, t_block_list *begin,
 	{
 		if (header->canary != 0xDEADBEAF)
 			raise(SIGSEGV);
-		current_place += sizeof(header) + header->size;
+		current_place += sizeof(*header) + header->size;
 		if (current_place >= total_size)
 		{
 			if (begin->next == NULL)
 				expand_tiny();
-			return (get_free_space_tiny(size, begin->next, sizeof(begin)));
+			return (get_free_space_tiny(size, begin->next, sizeof(*begin)));
 		}
-		header = (t_small_header*)((void*)header + (sizeof(header)
+		header = (t_small_header*)((void*)header + (sizeof(*header)
 					+ header->size));
 	}
 	header->free = 0;

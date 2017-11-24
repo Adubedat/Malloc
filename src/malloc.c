@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:00:19 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/22 18:20:56 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/24 19:06:20 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,28 +17,27 @@ void	*g_global_memory = NULL;
 
 void	*my_malloc(size_t size)
 {
-	t_type			type;
 	t_global_header	*global;
 	void			*memory_space;
 
 	if (g_global_memory == NULL)
 		init_global_memory();
-	type = get_type(size);
-	global = (t_global_header*)g_global_memory;
-	if ((memory_space = get_free_space_tiny(size, global->tiny,
-			sizeof(t_global_header) + sizeof(t_block_list))) == NULL)
-		;
-	return (memory_space);
-}
-
-t_type	get_type(size_t size)
-{
-	if (size <= TINY_SIZE)
-		return (TINY);
-	else if (size <= SMALL_SIZE)
-		return (SMALL);
+	if ((global = (t_global_header*)g_global_memory) == NULL)
+		return (NULL);
+	if (size > 0 && size <= TINY_SIZE)
+		return (get_free_space_tiny(size, global->tiny,
+		sizeof(t_global_header) + sizeof(t_block_list)));
+	else if (size > TINY_SIZE && size <= SMALL_SIZE)
+	{
+		if (global->small == NULL)
+			expand_small();
+		return (get_free_space_small(size, global->small,
+				   	sizeof(t_block_list)));
+	}
+	else if (size > SMALL_SIZE)
+		return (get_free_space_large(size));
 	else
-		return (LARGE);
+		return (NULL);
 }
 
 void	init_tiny_header(void *memory, unsigned short size)
@@ -61,10 +60,12 @@ void	init_global_memory(void)
 	int				size;
 
 	size = 0;
-	while (size < ((100 * TINY_SIZE) + sizeof(t_global_header)))
+	while (size < ((100 * (TINY_SIZE + sizeof(t_small_header))
+		+ sizeof(t_global_header))))
 		size += getpagesize();
-	memory = mmap(0, size, PROT_READ | PROT_WRITE,
-		MAP_ANON | MAP_PRIVATE, -1, 0);
+	if ((memory = mmap(0, size, PROT_READ | PROT_WRITE,
+		MAP_ANON | MAP_PRIVATE, -1, 0)) == MAP_FAILED)
+		return ;
 	g_global_memory = memory;
 	tiny = (t_block_list*)(memory + sizeof(t_global_header));
 	tiny->next = NULL;
@@ -73,7 +74,8 @@ void	init_global_memory(void)
 	global->small = NULL;
 	global->large = NULL;
 	global->tiny_size = size;
-	while (size < ((100 * SMALL_SIZE) + sizeof(t_block_list)))
+	while (size < ((100 * (SMALL_SIZE + sizeof(t_small_header))
+		+ sizeof(t_block_list))))
 		size += getpagesize();
 	global->small_size = size;
 	init_tiny_header(memory, sizeof(t_global_header)
