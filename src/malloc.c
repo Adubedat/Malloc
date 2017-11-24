@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:00:19 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/24 19:06:20 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/24 19:27:59 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	*my_malloc(size_t size)
 		if (global->small == NULL)
 			expand_small();
 		return (get_free_space_small(size, global->small,
-				   	sizeof(t_block_list)));
+			sizeof(t_block_list)));
 	}
 	else if (size > SMALL_SIZE)
 		return (get_free_space_large(size));
@@ -44,7 +44,7 @@ void	init_tiny_header(void *memory, unsigned short size)
 {
 	t_small_header	*tiny;
 	t_global_header	*global;
-	
+
 	global = (t_global_header*)memory;
 	tiny = (t_small_header*)(memory + size);
 	tiny->canary = CANARY;
@@ -78,6 +78,5 @@ void	init_global_memory(void)
 		+ sizeof(t_block_list))))
 		size += getpagesize();
 	global->small_size = size;
-	init_tiny_header(memory, sizeof(t_global_header)
-		+ (sizeof(t_block_list)));
+	init_tiny_header(memory, sizeof(t_global_header) + (sizeof(t_block_list)));
 }

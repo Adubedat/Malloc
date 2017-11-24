@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/17 15:11:26 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/24 18:25:55 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/24 19:45:04 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,13 @@ t_small_header	*cut_block(t_small_header *header, size_t size)
 	return (header);
 }
 
+void			*go_to_next_tiny(size_t size, t_block_list *begin)
+{
+	if (begin->next == NULL)
+		expand_tiny();
+	return (get_free_space_tiny(size, begin->next, sizeof(*begin)));
+}
+
 void			*get_free_space_tiny(size_t size, t_block_list *begin,
 		size_t info_size)
 {
@@ -75,11 +82,7 @@ void			*get_free_space_tiny(size_t size, t_block_list *begin,
 			raise(SIGSEGV);
 		current_place += sizeof(*header) + header->size;
 		if (current_place >= total_size)
-		{
-			if (begin->next == NULL)
-				expand_tiny();
-			return (get_free_space_tiny(size, begin->next, sizeof(*begin)));
-		}
+			return (go_to_next_tiny(size, begin));
 		header = (t_small_header*)((void*)header + (sizeof(*header)
 					+ header->size));
 	}

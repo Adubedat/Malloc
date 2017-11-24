@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/17 15:11:26 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/24 17:37:36 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/24 19:42:57 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 #include <signal.h>
 
 extern void	*g_global_memory;
+
+void			add_to_small_list(t_block_list *list, void *new_memory)
+{
+	while (list->next != NULL)
+		list = list->next;
+	list->next = (t_block_list*)new_memory;
+	list->next->next = NULL;
+}
 
 void			expand_small(void)
 {
@@ -34,16 +42,18 @@ void			expand_small(void)
 		global->small->next = NULL;
 	}
 	else
-	{
-		while (temp->next != NULL)
-			temp = temp->next;
-		temp->next = (t_block_list*)new_memory;
-		temp->next->next = NULL;
-	}
+		add_to_small_list(temp, new_memory);
 	new_header = (t_small_header*)(new_memory + sizeof(t_block_list));
 	new_header->canary = CANARY;
 	new_header->size = global->small_size - sizeof(*new_header) - sizeof(*temp);
 	new_header->free = 1;
+}
+
+void			*go_to_next_block(size_t size, t_block_list *begin)
+{
+	if (begin->next == NULL)
+		expand_small();
+	return (get_free_space_small(size, begin->next, sizeof(*begin)));
 }
 
 void			*get_free_space_small(size_t size, t_block_list *begin,
@@ -66,11 +76,7 @@ void			*get_free_space_small(size_t size, t_block_list *begin,
 			raise(SIGSEGV);
 		current_place += sizeof(*header) + header->size;
 		if (current_place >= total_size)
-		{
-			if (begin->next == NULL)
-				expand_small();
-			return (get_free_space_small(size, begin->next, sizeof(*begin)));
-		}
+			return (go_to_next_block(size, begin));
 		header = (t_small_header*)((void*)header + (sizeof(*header)
 					+ header->size));
 	}
