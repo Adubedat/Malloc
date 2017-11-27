@@ -3,27 +3,37 @@
 
 int main() {
 	char	*memory;
+	char	*memory1;
+	char	*memory2;
+	char	*memory3;
 	char	*tmp;
 	int		i = 0;
 	int		j = 0;
 
-	if ((memory = (char*)my_malloc(4097)) == NULL)
+	if ((memory = (char*)my_malloc(64)) == NULL)
+		printf("malloc failed\n");
+	if ((memory1 = (char*)my_malloc(64)) == NULL)
+		printf("malloc failed\n");
+	if ((memory2 = (char*)my_malloc(64)) == NULL)
+		printf("malloc failed\n");
+	if ((memory3 = (char*)my_malloc(64)) == NULL)
 		printf("malloc failed\n");
 	memory = ft_strcpy(memory, "ttttttttttttttttestestestestestestestestestestet");
-	tmp = memory;
-	while (i < 107)
+	while (i < 103)
 	{
 		j = 0;
-		memory = (char*)my_malloc(4097);
-		while (j < 4097)
+		if ((memory1 = (char*)my_malloc(64)) == NULL)
+			printf("malloc failed\n");
+		while (j < 64)
 		{
-			memory[j] = 'X';
+			memory1[j] = 'X';
 			j++;
 		}
 		i++;
-		ft_hexdump(memory - 8, 8192);
 	}
-	memory = (char*)my_malloc(33);
-	memory = ft_strcpy(memory, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+	ft_hexdump(memory, 8132);
+	my_free(memory1);
+//	memory = (char*)my_malloc(33);
+//	memory = ft_strcpy(memory, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:04:48 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/24 19:25:36 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/27 15:18:52 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,7 @@ typedef struct				s_small_header
 
 typedef struct				s_large_header
 {
-	int						canary;
 	size_t					size;
-	char					free;
 }							t_large_header;
 
 typedef struct				s_global_header
@@ -49,6 +47,7 @@ typedef struct				s_global_header
 }							t_global_header;
 
 void						*my_malloc(size_t size);
+void						my_free(void *ptr);
 void						init_global_memory(void);
 void						*get_free_space_tiny(size_t size,
 							t_block_list *begin, size_t info_size);
