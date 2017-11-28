@@ -19,7 +19,7 @@ int main() {
 	if ((memory3 = (char*)my_malloc(64)) == NULL)
 		printf("malloc failed\n");
 	memory = ft_strcpy(memory, "ttttttttttttttttestestestestestestestestestestet");
-	while (i < 103)
+/*	while (i < 103)
 	{
 		j = 0;
 		if ((memory1 = (char*)my_malloc(64)) == NULL)
@@ -30,10 +30,13 @@ int main() {
 			j++;
 		}
 		i++;
-	}
-	ft_hexdump(memory, 8132);
+	}*/
+	my_free(memory);
+	my_free(memory2);
 	my_free(memory1);
-//	memory = (char*)my_malloc(33);
-//	memory = ft_strcpy(memory, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+	memory = my_malloc(64);
+	memory = ft_strcpy(memory, "ttttttttttttttttestestestestestestestestestestet");
+	my_free(memory);
+	ft_hexdump(memory-16, 512);
 	return (0);
 }

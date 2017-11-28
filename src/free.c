@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 12:34:37 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/27 18:58:53 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/28 17:24:16 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,12 +84,12 @@ void	tiny_defragmentation(t_small_header	*header)
 		current_place = (void*)header - (void*)temp;
 	printf("%d\n", current_place);
 	if ((t_small_header*)(temp + 1) == header)
-		printf("defrag right\n");
+		defrag_right(header);
 	else if (current_place + sizeof(t_small_header) + header->size
 			>= global->tiny_size)
-		printf("defrag left\n");
+		defrag_left(header, current_place);
 	else
-		printf("defrag both\n");
+		defrag_both(header, current_place);
 }
 
 void	my_free(void *ptr)

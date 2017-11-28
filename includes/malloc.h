@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:04:48 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/27 15:18:52 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/28 17:24:39 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,8 @@ void						*get_free_space_large(size_t size);
 void						init_global_memory(void);
 t_small_header				*cut_block(t_small_header *header, size_t size);
 void						expand_small(void);
+void						defrag_left(t_small_header *header, size_t current_place);
+void						defrag_right(t_small_header *header);
+void						defrag_both(t_small_header *header, size_t current_place);
 
 #endif

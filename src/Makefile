@@ -6,7 +6,7 @@
 #    By: adubedat <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/04/23 17:07:31 by adubedat          #+#    #+#              #
-#    Updated: 2017/11/27 16:03:10 by adubedat         ###   ########.fr        #
+#    Updated: 2017/11/28 16:38:52 by adubedat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,6 +36,7 @@ SRC_NAME =	main.c \
 			small.c \
 			large.c \
 			free.c \
+			defragmentation.c \
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 
