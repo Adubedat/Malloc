@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:04:48 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/28 17:24:39 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/28 21:20:26 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,9 @@ typedef struct				s_global_header
 	size_t					small_size;
 }							t_global_header;
 
-void						*my_malloc(size_t size);
-void						my_free(void *ptr);
+void						*malloc(size_t size);
+void						free(void *ptr);
+void						*realloc(void *ptr, size_t size);
 void						init_global_memory(void);
 void						*get_free_space_tiny(size_t size,
 							t_block_list *begin, size_t info_size);
@@ -60,5 +61,6 @@ void						expand_small(void);
 void						defrag_left(t_small_header *header, size_t current_place);
 void						defrag_right(t_small_header *header);
 void						defrag_both(t_small_header *header, size_t current_place);
+int							is_large(void *ptr);
 
 #endif

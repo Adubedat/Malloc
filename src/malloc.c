@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:00:19 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/27 15:46:06 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/28 19:42:17 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void	*g_global_memory = NULL;
 
-void	*my_malloc(size_t size)
+void	*malloc(size_t size)
 {
 	t_global_header	*global;
 	void			*memory_space;
