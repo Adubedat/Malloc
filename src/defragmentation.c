@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 16:29:10 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/28 17:25:20 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/29 19:31:00 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	defrag_left(t_small_header *header, size_t current_place)
 	t_small_header	*prev_header;
 
 	if (current_place <= 0)
-		return;
+		return ;
 	str = (unsigned char*)header - 1;
 	current_place--;
 	while (current_place != 0
@@ -51,7 +51,7 @@ void	defrag_right(t_small_header *header)
 {
 	t_small_header	*next_header;
 
-	next_header = (t_small_header*)((void*)header + sizeof(t_small_header) 
+	next_header = (t_small_header*)((void*)header + sizeof(t_small_header)
 			+ header->size);
 	if (next_header->free == 1)
 		header->size += sizeof(t_small_header) + next_header->size;

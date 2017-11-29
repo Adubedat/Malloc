@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:04:48 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/28 21:20:26 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/29 19:31:39 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,12 @@ typedef struct				s_block_list
 {
 	struct s_block_list		*next;
 }							t_block_list;
+
+typedef struct				s_sorted_list
+{
+	struct s_sorted_list	*next;
+	t_block_list			*address;
+}							t_sorted_list;
 
 typedef struct				s_small_header
 {
@@ -49,6 +55,7 @@ typedef struct				s_global_header
 void						*malloc(size_t size);
 void						free(void *ptr);
 void						*realloc(void *ptr, size_t size);
+void						show_alloc_mem();
 void						init_global_memory(void);
 void						*get_free_space_tiny(size_t size,
 							t_block_list *begin, size_t info_size);
@@ -58,9 +65,11 @@ void						*get_free_space_large(size_t size);
 void						init_global_memory(void);
 t_small_header				*cut_block(t_small_header *header, size_t size);
 void						expand_small(void);
-void						defrag_left(t_small_header *header, size_t current_place);
+void						defrag_left(t_small_header *header,
+		size_t current_place);
 void						defrag_right(t_small_header *header);
-void						defrag_both(t_small_header *header, size_t current_place);
+void						defrag_both(t_small_header *header,
+		size_t current_place);
 int							is_large(void *ptr);
 
 #endif

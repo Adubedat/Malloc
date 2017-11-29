@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 12:34:37 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/28 22:46:28 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/29 19:30:34 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int		is_large(void *ptr)
 	return (0);
 }
 
-void	free_large(void	*ptr)
+void	free_large(void *ptr)
 {
 	t_global_header	*global;
 	t_block_list	*temp;
@@ -86,8 +86,7 @@ void	small_defragmentation(t_small_header *header)
 		defrag_both(header, current_place);
 }
 
-
-void	tiny_defragmentation(t_small_header	*header)
+void	tiny_defragmentation(t_small_header *header)
 {
 	t_global_header	*global;
 	t_block_list	*temp;

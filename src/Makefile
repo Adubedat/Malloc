@@ -6,7 +6,7 @@
 #    By: adubedat <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/04/23 17:07:31 by adubedat          #+#    #+#              #
-#    Updated: 2017/11/28 20:49:48 by adubedat         ###   ########.fr        #
+#    Updated: 2017/11/29 16:18:52 by adubedat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,8 @@ SRC_NAME =	main.c \
 			large.c \
 			free.c \
 			defragmentation.c \
-			realloc.c
+			realloc.c \
+			show_alloc.c \
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 
