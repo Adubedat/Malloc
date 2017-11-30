@@ -6,15 +6,17 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/17 15:11:26 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/24 19:42:57 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/30 16:26:16 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <sys/mman.h>
 #include <signal.h>
+#include <pthread.h>
 
-extern void	*g_global_memory;
+extern void				*g_global_memory;
+extern pthread_mutex_t	g_mutex;
 
 void			add_to_small_list(t_block_list *list, void *new_memory)
 {
@@ -53,24 +55,23 @@ void			*go_to_next_block(size_t size, t_block_list *begin)
 {
 	if (begin->next == NULL)
 		expand_small();
-	return (get_free_space_small(size, begin->next, sizeof(*begin)));
+	pthread_mutex_unlock(&g_mutex);
+	return (get_free_space_small(size, begin->next,
+			((t_global_header*)g_global_memory)->small_size - sizeof(*begin)));
 }
 
 void			*get_free_space_small(size_t size, t_block_list *begin,
-		size_t info_size)
+		unsigned int total_size)
 {
 	t_small_header	*header;
-	t_global_header	*global;
-	unsigned int	total_size;
 	unsigned int	current_place;
 
 	current_place = 0;
 	if (begin == NULL)
 		return (NULL);
-	global = (t_global_header*)g_global_memory;
-	total_size = global->small_size - info_size;
+	pthread_mutex_lock(&g_mutex);
 	header = (t_small_header*)(begin + 1);
-	while (!header->free || header->size < size)
+	while (!header->free || header->size < (int)size)
 	{
 		if (header->canary != 0xDEADBEAF)
 			raise(SIGSEGV);
@@ -82,5 +83,8 @@ void			*get_free_space_small(size_t size, t_block_list *begin,
 	}
 	header->free = 0;
 	header = cut_block(header, size);
+	pthread_mutex_unlock(&g_mutex);
+	if (getenv("MallocVerbose") != NULL)
+		print_zone_ex(header);
 	return ((void*)(header + 1));
 }

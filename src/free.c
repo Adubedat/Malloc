@@ -6,14 +6,16 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 12:34:37 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/29 19:30:34 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/30 16:27:18 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <sys/mman.h>
+#include <pthread.h>
 
-extern void	*g_global_memory;
+extern void				*g_global_memory;
+extern pthread_mutex_t	g_mutex;
 
 int		is_large(void *ptr)
 {
@@ -68,7 +70,7 @@ void	small_defragmentation(t_small_header *header)
 	global = (t_global_header*)g_global_memory;
 	temp = global->small;
 	while (((void*)header - (void*)temp < 0
-			|| (void*)header - (void*)temp > global->small_size)
+			|| (size_t)((void*)header - (void*)temp) > global->small_size)
 			&& (temp != NULL))
 		temp = temp->next;
 	if (temp == NULL)
@@ -95,7 +97,7 @@ void	tiny_defragmentation(t_small_header *header)
 	global = (t_global_header*)g_global_memory;
 	temp = global->tiny;
 	while (((void*)header - (void*)temp < 0
-			|| (void*)header - (void*)temp > global->tiny_size)
+			|| (size_t)((void*)header - (void*)temp) > global->tiny_size)
 			&& (temp != NULL))
 		temp = temp->next;
 	if (temp == NULL)
@@ -119,6 +121,7 @@ void	free(void *ptr)
 
 	if (ptr == NULL)
 		return ;
+	pthread_mutex_lock(&g_mutex);
 	if (is_large(ptr))
 		free_large(ptr);
 	else
@@ -126,5 +129,12 @@ void	free(void *ptr)
 		header = (t_small_header*)(ptr - sizeof(t_small_header));
 		header->free = 1;
 		tiny_defragmentation(header);
+	}
+	pthread_mutex_unlock(&g_mutex);
+	if (getenv("MallocVerbose") != NULL)
+	{
+		unsetenv("MallocVerbose");
+		ft_printf("%p pointer freed.\n", ptr);
+		setenv("MallocVerbose", "1", 1);
 	}
 }

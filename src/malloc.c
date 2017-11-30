@@ -6,19 +6,20 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:00:19 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/29 14:41:08 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/30 16:22:18 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <sys/mman.h>
+#include <pthread.h>
 
-void	*g_global_memory = NULL;
+void			*g_global_memory = NULL;
+pthread_mutex_t	g_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void	*malloc(size_t size)
 {
 	t_global_header	*global;
-	void			*memory_space;
 
 	if (g_global_memory == NULL)
 		init_global_memory();
@@ -26,13 +27,13 @@ void	*malloc(size_t size)
 		return (NULL);
 	if (size > 0 && size <= TINY_SIZE)
 		return (get_free_space_tiny(size, global->tiny,
-		sizeof(t_global_header) + sizeof(t_block_list)));
+		global->tiny_size - sizeof(t_global_header) + sizeof(t_block_list)));
 	else if (size > TINY_SIZE && size <= SMALL_SIZE)
 	{
 		if (global->small == NULL)
 			expand_small();
 		return (get_free_space_small(size, global->small,
-			sizeof(t_block_list)));
+			global->small_size - sizeof(t_block_list)));
 	}
 	else if (size > SMALL_SIZE)
 		return (get_free_space_large(size));
@@ -57,7 +58,7 @@ void	init_global_memory(void)
 	void			*memory;
 	t_global_header	*global;
 	t_block_list	*tiny;
-	int				size;
+	unsigned long	size;
 
 	size = 0;
 	while (size < ((100 * (TINY_SIZE + sizeof(t_small_header))

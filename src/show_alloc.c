@@ -6,13 +6,15 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 14:41:32 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/29 19:28:29 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/30 17:09:29 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
+#include <pthread.h>
 
-extern void	*g_global_memory;
+extern void				*g_global_memory;
+extern pthread_mutex_t	g_mutex;
 
 long long int	parse_small_tiny(t_block_list *begin, int total_size, int count)
 {
@@ -25,7 +27,8 @@ long long int	parse_small_tiny(t_block_list *begin, int total_size, int count)
 	if (begin == NULL)
 		return (count);
 	header = (t_small_header*)(begin + 1);
-	while (current_place + header->size + sizeof(t_small_header) < total_size)
+	while (current_place + header->size + sizeof(t_small_header)
+			< (size_t)total_size)
 	{
 		if (!header->free)
 		{

@@ -6,32 +6,36 @@
 #    By: adubedat <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/04/23 17:07:31 by adubedat          #+#    #+#              #
-#    Updated: 2017/11/29 16:18:52 by adubedat         ###   ########.fr        #
+#    Updated: 2017/11/30 17:13:14 by adubedat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 .SILENT:
 
-NAME = malloc
+ifeq ($(HOSTTYPE),)
+    HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
+
+NAME = libft_malloc_$(HOSTTYPE).so
+SYMB_LINK = libft_malloc.so
 
 SRC_PATH = .
 ROOT = ..
 OBJ_FOLDER = obj
-INC_PATH =	$(ROOT)/includes \
-			$(ROOT)/libft \
+INC_PATH = $(ROOT)/includes \
+		   $(ROOT)/libft \
 
 OBJ_PATH = $(ROOT)/$(OBJ_FOLDER)
 DST_PATH = $(ROOT)
 LFT_PATH = $(ROOT)/libft
 
 CC = gcc
-CFLAGS = -g #-Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 CPPFLAGS = $(addprefix -I ,$(INC_PATH))
-LDFLAGS = -L$(LFT_PATH)
+LDFLAGS = -shared -L$(LFT_PATH)
 LDLIBS = -lft
 
-SRC_NAME =	main.c \
-			malloc.c \
+SRC_NAME =	malloc.c \
 			tiny.c \
 			small.c \
 			large.c \
@@ -56,6 +60,7 @@ $(OBJ_PATH)/%.o: %.c
 
 $(DST): $(OBJ)
 	$(CC) $(OBJ) $(LDFLAGS) $(LDLIBS) -o $(DST)
+	ln -s $(NAME) $(ROOT)/$(SYMB_LINK)
 	printf "\e[32m----------------------------------\e[36m\n"
 	printf "\e[32m[✔]\e[36m $@"
 	printf "\n\e[32m----------------------------------\e[36m"
@@ -73,6 +78,7 @@ clean:
 fclean: clean
 	printf "\e[36m"
 	@rm -fv $(DST)
+	@rm -fv $(ROOT)/$(SYMB_LINK)
 	printf "\e[31m----------------------------------\n"
 	printf "[✔]\e[36m $(NAME): All deleted\n"
 	printf "\e[31m----------------------------------\e[36m"

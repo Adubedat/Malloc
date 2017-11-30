@@ -6,15 +6,17 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/17 15:11:26 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/29 19:18:56 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/30 16:25:40 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <sys/mman.h>
 #include <signal.h>
+#include <pthread.h>
 
-extern void	*g_global_memory;
+extern void				*g_global_memory;
+extern pthread_mutex_t	g_mutex;
 
 void			expand_tiny(void)
 {
@@ -38,13 +40,13 @@ void			expand_tiny(void)
 	new_header->free = 1;
 }
 
-t_small_header	*cut_block(t_small_header *header, size_t size)
+t_small_header	*cut_block(t_small_header *header, int size)
 {
 	t_small_header	*new_header;
 	void			*temp;
 
 	temp = (void*)header;
-	if (header->size > (size + sizeof(*header)))
+	if (header->size > (int)(size + sizeof(*header)))
 	{
 		new_header = (t_small_header*)(temp + sizeof(*header) + size);
 		new_header->canary = CANARY;
@@ -59,22 +61,29 @@ void			*go_to_next_tiny(size_t size, t_block_list *begin)
 {
 	if (begin->next == NULL)
 		expand_tiny();
-	return (get_free_space_tiny(size, begin->next, sizeof(*begin)));
+	pthread_mutex_unlock(&g_mutex);
+	return (get_free_space_tiny(size, begin->next,
+			((t_global_header*)g_global_memory)->tiny_size - sizeof(*begin)));
 }
 
-void			*get_free_space_tiny(size_t size, t_block_list *begin,
-		size_t info_size)
+void			print_zone_ex(t_small_header *header)
+{
+	unsetenv("MallocVerbose");
+	ft_printf("%d bytes allocated from %p to %p\n", header->size, header + 1,
+			(void*)(header + 1) + header->size);
+	setenv("MallocVerbose", "1", 1);
+}
+
+void			*get_free_space_tiny(int size, t_block_list *begin,
+		unsigned short total_size)
 {
 	t_small_header	*header;
-	t_global_header	*global;
-	unsigned short	total_size;
 	unsigned short	current_place;
 
 	current_place = 0;
 	if (begin == NULL)
 		return (NULL);
-	global = (t_global_header*)g_global_memory;
-	total_size = global->tiny_size - info_size;
+	pthread_mutex_lock(&g_mutex);
 	header = (t_small_header*)(begin + 1);
 	while (!header->free || header->size < size)
 	{
@@ -88,5 +97,8 @@ void			*get_free_space_tiny(size_t size, t_block_list *begin,
 	}
 	header->free = 0;
 	header = cut_block(header, size);
+	pthread_mutex_unlock(&g_mutex);
+	if (getenv("MallocVerbose") != NULL)
+		print_zone_ex(header);
 	return ((void*)(header + 1));
 }

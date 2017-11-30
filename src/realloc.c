@@ -6,11 +6,14 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 19:27:29 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/28 22:07:15 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/11/30 17:07:46 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
+#include <pthread.h>
+
+extern pthread_mutex_t	g_mutex;
 
 void	*realloc_large(void *ptr, size_t size)
 {
@@ -46,7 +49,7 @@ void	*realloc_small_tiny(void *ptr, size_t size)
 		free(ptr);
 		return (memory);
 	}
-	else if (size < header->size)
+	else if ((int)size < header->size)
 	{
 		cut_block(header, size);
 		return (ptr);
@@ -62,15 +65,18 @@ void	*realloc_small_tiny(void *ptr, size_t size)
 
 void	*realloc(void *ptr, size_t size)
 {
+	void	*memory;
+
 	if (ptr == NULL)
-		return (malloc(size));
-	if (ptr != NULL && size == 0)
+		memory = malloc(size);
+	else if (ptr != NULL && size == 0)
 	{
 		free(ptr);
-		return (NULL);
+		memory = NULL;
 	}
-	if (is_large(ptr))
-		return (realloc_large(ptr, size));
+	else if (is_large(ptr))
+		memory = realloc_large(ptr, size);
 	else
-		return (realloc_small_tiny(ptr, size));
+		memory = realloc_small_tiny(ptr, size);
+	return (memory);
 }
