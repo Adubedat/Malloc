@@ -6,21 +6,37 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:00:19 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/30 16:22:18 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/01 17:27:46 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <sys/mman.h>
 #include <pthread.h>
+#include <stdlib.h>
 
 void			*g_global_memory = NULL;
-pthread_mutex_t	g_mutex = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t	g_mutex = PTHREAD_MUTEX_INITIALIZER;
+uint8_t			g_env = 0;
+uint8_t			clear_env = 0;
+uint8_t			set_env = 0;
 
 void	*malloc(size_t size)
 {
 	t_global_header	*global;
+	char			*env;
 
+	if (clear_env == 0) {
+		clearenv();
+		clear_env = 1;
+	}
+	if (set_env == 0) {
+		setenv("MyMallocVerbose", "1", 1);
+		set_env = 1;
+	}
+	if (g_env == 0 && (env = getenv("MyMallocVerbose")) != NULL) {
+		g_env = 1;
+	}
 	if (g_global_memory == NULL)
 		init_global_memory();
 	if ((global = (t_global_header*)g_global_memory) == NULL)

@@ -6,7 +6,7 @@
 #    By: adubedat <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/11/27 19:30:56 by adubedat          #+#    #+#              #
-#    Updated: 2017/11/16 17:55:40 by adubedat         ###   ########.fr        #
+#    Updated: 2017/12/01 15:00:00 by adubedat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ SRC = ft_putchar.c ft_putstr.c ft_putendl.c ft_putnbr.c ft_putchar_fd.c \
 	  ft_strjoin_free_s1.c ft_putwchar.c ft_atoi_base.c ft_putwstr.c \
 	  ft_strdup_free.c get_next_line.c ft_strjoin_free_both.c char.c string.c \
 	  pointer.c signed_decimal.c unsigned_decimal.c check_flags.c apply_flags.c \
-	  ft_printf.c ft_hexdump.c 
+	  ft_printf.c ft_hexdump.c ft_putnbr_hexa.c
 
 OBJ = $(SRC:.c=.o)
 

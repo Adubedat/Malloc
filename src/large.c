@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 18:27:11 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/30 15:59:09 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/01 17:10:24 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,23 @@
 #include <pthread.h>
 
 extern void				*g_global_memory;
-extern pthread_mutex_t	g_mutex;
+//extern pthread_mutex_t	g_mutex;
+
+int		is_large(void *ptr)
+{
+	t_global_header	*global;
+	t_block_list	*temp;
+
+	global = (t_global_header*)g_global_memory;
+	temp = global->large;
+	while (temp != NULL)
+	{
+		if ((void*)(temp + 1) == ptr)
+			return (1);
+		temp = temp->next;
+	}
+	return (0);
+}
 
 void	print_large_ex(t_large_header *header)
 {
@@ -42,14 +58,14 @@ void	*get_free_space_large(size_t size)
 	if ((new_memory = mmap(0, map_size, PROT_READ | PROT_WRITE,
 		MAP_ANON | MAP_PRIVATE, -1, 0)) == MAP_FAILED)
 		return (NULL);
-	pthread_mutex_lock(&g_mutex);
+//	pthread_mutex_lock(&g_mutex);
 	header = (t_large_header*)new_memory;
 	header->size = map_size;
 	new_large = (t_block_list*)(new_memory + sizeof(t_large_header));
 	new_large->next = global->large;
 	global->large = new_large;
-	pthread_mutex_unlock(&g_mutex);
-	if (getenv("MallocVerbose") != NULL)
-		print_large_ex(header);
+//	pthread_mutex_unlock(&g_mutex);
+//	if (getenv("MallocVerbose") != NULL)
+//		print_large_ex(header);
 	return (new_memory + sizeof(t_block_list) + sizeof(t_large_header));
 }

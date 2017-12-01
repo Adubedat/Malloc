@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 16:29:10 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/29 19:31:00 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/01 17:12:12 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 void	free_memset(t_small_header *header)
 {
-	if (getenv("MyMallocScribble") != NULL)
-		ft_memset(header + 1, 0x55, header->size);
-	else
-		ft_bzero(header + 1, header->size);
+	if (header)
+		;
+//	if (getenv("MyMallocScribble") != NULL)
+//		ft_memset(header + 1, 0x55, header->size);
+//	else
+//		ft_bzero(header + 1, header->size);
 }
 
 void	defrag_left(t_small_header *header, size_t current_place)

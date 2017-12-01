@@ -6,14 +6,12 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 19:27:29 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/30 17:07:46 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/01 15:55:18 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <pthread.h>
-
-extern pthread_mutex_t	g_mutex;
 
 void	*realloc_large(void *ptr, size_t size)
 {

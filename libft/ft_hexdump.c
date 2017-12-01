@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/16 16:58:15 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/24 15:21:10 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/01 15:32:01 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,36 @@ void	ft_hexdump_char(unsigned char *str, int len)
 	int i;
 
 	i = 0;
-	ft_printf("  ");
+	ft_putstr("  ");
 	while (i < len)
 	{
 		if ((str[i] >= 0 && str[i] <= 32)
 			|| (str[i] >= 127))
-			ft_printf(".");
+			ft_putchar('.');
 		else
-			ft_printf("%c", str[i]);
+			ft_putchar(str[i]);
 		i++;
+	}
+	ft_putchar('\n');
+}
+
+void	print_byte(unsigned char byte)
+{
+	char	*b;
+
+	b = "0123456789abcdef";
+
+	ft_putchar(' ');
+	ft_putchar(b[byte / 16]);
+	ft_putchar(b[byte % 16]);
+}
+
+void	print_space(int space)
+{
+	while (space > 0)
+	{
+		ft_putchar(' ');
+		space--;
 	}
 }
 
@@ -39,21 +60,20 @@ void	ft_hexdump(void *memory, int len)
 	if (!memory)
 		return ;
 	byte = (unsigned char*)memory;
-	ft_printf("%p:", &byte[i]);
+	print_addr(&byte[i]);
 	while (i < len)
 	{
 		if (i % 16 == 0 && i != 0)
 		{
 			ft_hexdump_char(&byte[i - 16], 16);
-			ft_printf("\n%p:", &byte[i]);
+			print_addr(&byte[i]);
 		}
-		ft_printf(" %02hhx", byte[i++]);
+		print_byte(byte[i++]);
 	}
 	if (i % 16 == 0)
 		space = 0;
 	else
 		space = (16 - (i % 16)) * 3;
-	ft_printf("%*s", space, "");
+	print_space(space);
 	ft_hexdump_char(&byte[i - (16 - space / 3)], (16 - space / 3));
-	ft_putchar('\n');
 }

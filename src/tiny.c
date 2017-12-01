@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/17 15:11:26 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/30 16:25:40 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/01 17:16:24 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 #include <sys/mman.h>
 #include <signal.h>
 #include <pthread.h>
+#include <stdlib.h>
 
 extern void				*g_global_memory;
 extern pthread_mutex_t	g_mutex;
+extern uint8_t			g_env;
 
 void			expand_tiny(void)
 {
@@ -61,17 +63,19 @@ void			*go_to_next_tiny(size_t size, t_block_list *begin)
 {
 	if (begin->next == NULL)
 		expand_tiny();
-	pthread_mutex_unlock(&g_mutex);
+//	pthread_mutex_unlock(&g_mutex);
 	return (get_free_space_tiny(size, begin->next,
 			((t_global_header*)g_global_memory)->tiny_size - sizeof(*begin)));
 }
 
 void			print_zone_ex(t_small_header *header)
 {
-	unsetenv("MallocVerbose");
-	ft_printf("%d bytes allocated from %p to %p\n", header->size, header + 1,
-			(void*)(header + 1) + header->size);
-	setenv("MallocVerbose", "1", 1);
+	ft_putnbr(header->size);
+	ft_putstr(" bytes allocated from ");
+	print_addr(header + 1);
+	ft_putstr(" to ");
+	print_addr((void*)(header + 1) + header->size);
+	ft_putchar('\n');
 }
 
 void			*get_free_space_tiny(int size, t_block_list *begin,
@@ -83,7 +87,7 @@ void			*get_free_space_tiny(int size, t_block_list *begin,
 	current_place = 0;
 	if (begin == NULL)
 		return (NULL);
-	pthread_mutex_lock(&g_mutex);
+//	pthread_mutex_lock(&g_mutex);
 	header = (t_small_header*)(begin + 1);
 	while (!header->free || header->size < size)
 	{
@@ -97,8 +101,8 @@ void			*get_free_space_tiny(int size, t_block_list *begin,
 	}
 	header->free = 0;
 	header = cut_block(header, size);
-	pthread_mutex_unlock(&g_mutex);
-	if (getenv("MallocVerbose") != NULL)
+	if (g_env == 1)
 		print_zone_ex(header);
+//	pthread_mutex_unlock(&g_mutex);
 	return ((void*)(header + 1));
 }

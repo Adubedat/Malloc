@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 12:34:37 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/30 16:27:18 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/01 17:10:48 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,25 @@
 #include <pthread.h>
 
 extern void				*g_global_memory;
-extern pthread_mutex_t	g_mutex;
+//extern pthread_mutex_t	g_mutex;
 
-int		is_large(void *ptr)
+int		is_mine(void *ptr)
 {
 	t_global_header	*global;
 	t_block_list	*temp;
 
 	global = (t_global_header*)g_global_memory;
-	temp = global->large;
+	temp = global->tiny;
 	while (temp != NULL)
 	{
-		if ((void*)(temp + 1) == ptr)
+		if (ptr > (void*)temp && ptr < (void*)temp + global->tiny_size)
+			return (1);
+		temp = temp->next;
+	}
+	temp = global->small;
+	while (temp != NULL)
+	{
+		if (ptr > (void*)temp && ptr < (void*)temp + global->small_size)
 			return (1);
 		temp = temp->next;
 	}
@@ -96,9 +103,8 @@ void	tiny_defragmentation(t_small_header *header)
 
 	global = (t_global_header*)g_global_memory;
 	temp = global->tiny;
-	while (((void*)header - (void*)temp < 0
-			|| (size_t)((void*)header - (void*)temp) > global->tiny_size)
-			&& (temp != NULL))
+	while ((temp != NULL) && ((void*)header - (void*)temp < 0
+			|| (size_t)((void*)header - (void*)temp) > global->tiny_size))
 		temp = temp->next;
 	if (temp == NULL)
 		return (small_defragmentation(header));
@@ -121,20 +127,25 @@ void	free(void *ptr)
 
 	if (ptr == NULL)
 		return ;
-	pthread_mutex_lock(&g_mutex);
+//	pthread_mutex_lock(&g_mutex);
 	if (is_large(ptr))
 		free_large(ptr);
-	else
+	else if (is_mine(ptr))
 	{
 		header = (t_small_header*)(ptr - sizeof(t_small_header));
 		header->free = 1;
 		tiny_defragmentation(header);
 	}
-	pthread_mutex_unlock(&g_mutex);
-	if (getenv("MallocVerbose") != NULL)
+	else
 	{
-		unsetenv("MallocVerbose");
-		ft_printf("%p pointer freed.\n", ptr);
-		setenv("MallocVerbose", "1", 1);
+//		pthread_mutex_unlock(&g_mutex);
+		return ;
 	}
+//	pthread_mutex_unlock(&g_mutex);
+//	if (getenv("MallocVerbose") != NULL)
+//	{
+//		unsetenv("MallocVerbose");
+//		ft_printf("%p pointer freed.\n", ptr);
+//		setenv("MallocVerbose", "1", 1);
+//	}
 }
