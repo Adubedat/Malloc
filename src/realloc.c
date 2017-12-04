@@ -6,12 +6,12 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 19:27:29 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/01 15:55:18 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/04 21:21:07 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
-#include <pthread.h>
+#include "libft.h"
 
 void	*realloc_large(void *ptr, size_t size)
 {
@@ -65,6 +65,11 @@ void	*realloc(void *ptr, size_t size)
 {
 	void	*memory;
 
+	ft_putstr("Realloc called for pointer ");
+	print_addr(ptr);
+	ft_putstr(" and size ");
+	ft_putnbr(size);
+	ft_putchar('\n');
 	if (ptr == NULL)
 		memory = malloc(size);
 	else if (ptr != NULL && size == 0)

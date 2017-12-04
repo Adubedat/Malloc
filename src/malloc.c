@@ -6,36 +6,43 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:00:19 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/01 17:27:46 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/04 19:42:20 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <sys/mman.h>
-#include <pthread.h>
-#include <stdlib.h>
+#include <unistd.h>
 
 void			*g_global_memory = NULL;
-//pthread_mutex_t	g_mutex = PTHREAD_MUTEX_INITIALIZER;
-uint8_t			g_env = 0;
-uint8_t			clear_env = 0;
-uint8_t			set_env = 0;
+pthread_mutex_t	g_mutex = PTHREAD_MUTEX_INITIALIZER;
+t_env			g_env = {
+	.env = 0,
+	.tiny = 0,
+	.small = 0,
+	.large = 0,
+	.scribble = 0,
+};
+
+void	init_env_variable()
+{
+	g_env.env = 1;
+	if (getenv("MallocTinyVerbose"))
+		g_env.tiny = 1;
+	if (getenv("MallocSmallVerbose"))
+		g_env.small = 1;
+	if (getenv("MallocLargeVerbose"))
+		g_env.large = 1;
+	if (getenv("MyMallocScribble"))
+		g_env.scribble = 1;
+}
 
 void	*malloc(size_t size)
 {
 	t_global_header	*global;
-	char			*env;
 
-	if (clear_env == 0) {
-		clearenv();
-		clear_env = 1;
-	}
-	if (set_env == 0) {
-		setenv("MyMallocVerbose", "1", 1);
-		set_env = 1;
-	}
-	if (g_env == 0 && (env = getenv("MyMallocVerbose")) != NULL) {
-		g_env = 1;
+	if (g_env.env == 0) {
+		init_env_variable();
 	}
 	if (g_global_memory == NULL)
 		init_global_memory();

@@ -6,20 +6,25 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 16:29:10 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/01 17:12:12 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/04 22:13:23 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
+#include "libft.h"
 
 void	free_memset(t_small_header *header)
 {
-	if (header)
-		;
-//	if (getenv("MyMallocScribble") != NULL)
-//		ft_memset(header + 1, 0x55, header->size);
-//	else
-//		ft_bzero(header + 1, header->size);
+	int	size;
+
+	if (header->size > getpagesize())
+		size = getpagesize();
+	else
+		size = header->size;
+	if (g_env.scribble == 1)
+		ft_memset(header + 1, 0x55, size);
+	else
+		ft_bzero(header + 1, size);
 }
 
 void	defrag_left(t_small_header *header, size_t current_place)

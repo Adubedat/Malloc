@@ -6,17 +6,17 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/29 14:41:32 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/30 17:09:29 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/04 19:44:34 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
-#include <pthread.h>
+#include "libft.h"
 
 extern void				*g_global_memory;
 extern pthread_mutex_t	g_mutex;
 
-long long int	parse_small_tiny(t_block_list *begin, int total_size, int count)
+long long int	parse_small(t_block_list *begin, int total_size, int count)
 {
 	t_small_header	*header;
 	t_global_header	*global;
@@ -39,7 +39,34 @@ long long int	parse_small_tiny(t_block_list *begin, int total_size, int count)
 		current_place += header->size + sizeof(t_small_header);
 		header = (t_small_header*)((void*)(header + 1) + header->size);
 	}
-	return (parse_small_tiny(begin->next, global->tiny_size
+	return (parse_small(begin->next, global->small_size
+				- sizeof(t_block_list), count));
+}
+
+long long int	parse_tiny(t_block_list *begin, int total_size, int count)
+{
+	t_small_header	*header;
+	t_global_header	*global;
+	int				current_place;
+
+	global = (t_global_header*)g_global_memory;
+	current_place = 0;
+	if (begin == NULL)
+		return (count);
+	header = (t_small_header*)(begin + 1);
+	while (current_place + header->size + sizeof(t_small_header)
+			< (size_t)total_size)
+	{
+		if (!header->free)
+		{
+			ft_printf("%p - %p : %d octets\n", header + 1, (void*)(header + 1)
+					+ header->size, header->size);
+			count += header->size;
+		}
+		current_place += header->size + sizeof(t_small_header);
+		header = (t_small_header*)((void*)(header + 1) + header->size);
+	}
+	return (parse_tiny(begin->next, global->tiny_size
 				- sizeof(t_block_list), count));
 }
 
@@ -109,11 +136,11 @@ void			show_alloc_mem(void)
 		ft_printf("TINY : %p\n", global->tiny);
 	else
 		ft_printf("TINY : NULL");
-	total += parse_small_tiny(global->tiny, (global->tiny_size
+	total += parse_tiny(global->tiny, (global->tiny_size
 			- sizeof(t_global_header) - sizeof(t_block_list)), 0);
 	if (global->small)
 		ft_printf("SMALL : %p\n", global->small);
-	total += parse_small_tiny(global->small, (global->small_size
+	total += parse_small(global->small, (global->small_size
 			- sizeof(t_block_list)), 0);
 	total += parse_large(global->large);
 	ft_printf("Total : %d octets\n", total);

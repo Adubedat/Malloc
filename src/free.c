@@ -6,16 +6,13 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 12:34:37 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/01 17:10:48 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/04 21:50:54 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
+#include "libft.h"
 #include <sys/mman.h>
-#include <pthread.h>
-
-extern void				*g_global_memory;
-//extern pthread_mutex_t	g_mutex;
 
 int		is_mine(void *ptr)
 {
@@ -82,10 +79,7 @@ void	small_defragmentation(t_small_header *header)
 		temp = temp->next;
 	if (temp == NULL)
 		return ;
-	if (temp == global->small)
-		current_place = (void*)header - (void*)temp + sizeof(t_global_header);
-	else
-		current_place = (void*)header - (void*)temp;
+	current_place = (void*)header - (void*)temp;
 	if ((t_small_header*)(temp + 1) == header)
 		defrag_right(header);
 	else if (current_place + sizeof(t_small_header) + header->size
@@ -125,9 +119,15 @@ void	free(void *ptr)
 {
 	t_small_header	*header;
 
+	if (g_env.scribble == 1)
+	{
+		ft_putstr("Free called for pointer ");
+		print_addr(ptr);
+		ft_putchar('\n');
+	}
 	if (ptr == NULL)
 		return ;
-//	pthread_mutex_lock(&g_mutex);
+	pthread_mutex_lock(&g_mutex);
 	if (is_large(ptr))
 		free_large(ptr);
 	else if (is_mine(ptr))
@@ -138,14 +138,8 @@ void	free(void *ptr)
 	}
 	else
 	{
-//		pthread_mutex_unlock(&g_mutex);
+		pthread_mutex_unlock(&g_mutex);
 		return ;
 	}
-//	pthread_mutex_unlock(&g_mutex);
-//	if (getenv("MallocVerbose") != NULL)
-//	{
-//		unsetenv("MallocVerbose");
-//		ft_printf("%p pointer freed.\n", ptr);
-//		setenv("MallocVerbose", "1", 1);
-//	}
+	pthread_mutex_unlock(&g_mutex);
 }

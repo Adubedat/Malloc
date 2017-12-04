@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:04:48 by adubedat          #+#    #+#             */
-/*   Updated: 2017/11/30 16:25:32 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/04 19:41:46 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@
 # define SMALL_SIZE 4096
 
 # define CANARY		0xDEADBEAF
-# include "libft.h"
+
+# include <stdlib.h>
+# include <pthread.h>
 
 typedef struct				s_block_list
 {
@@ -50,6 +52,19 @@ typedef struct				s_global_header
 	size_t					tiny_size;
 	size_t					small_size;
 }							t_global_header;
+
+typedef struct				s_env
+{
+	uint8_t					env;
+	uint8_t					tiny;
+	uint8_t					small;
+	uint8_t					large;
+	uint8_t					scribble;
+}							t_env;
+
+extern void					*g_global_memory;
+extern pthread_mutex_t		g_mutex;
+extern t_env				g_env;
 
 void						*malloc(size_t size);
 void						free(void *ptr);

@@ -6,16 +6,13 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 18:27:11 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/01 17:10:24 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/04 19:43:11 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <sys/mman.h>
-#include <pthread.h>
-
-extern void				*g_global_memory;
-//extern pthread_mutex_t	g_mutex;
+#include "libft.h"
 
 int		is_large(void *ptr)
 {
@@ -35,12 +32,12 @@ int		is_large(void *ptr)
 
 void	print_large_ex(t_large_header *header)
 {
-	unsetenv("MallocVerbose");
-	ft_printf("%d bytes allocated from %p to %p\n", header->size
-			- sizeof(t_large_header) - sizeof(t_block_list), (void*)header
-			+ sizeof(t_large_header) + sizeof(t_block_list), (void*)header
-			+ header->size);
-	setenv("MallocVerbose", "1", 1);
+	ft_putnbr(header->size - sizeof(t_large_header) - sizeof(t_block_list));
+	ft_putstr(" bytes allocated from ");
+	print_addr((void*)header + sizeof(t_large_header) + sizeof(t_block_list));
+	ft_putstr(" to ");
+	print_addr((void*)header + header->size);
+	ft_putchar('\n');
 }
 
 void	*get_free_space_large(size_t size)
@@ -58,14 +55,14 @@ void	*get_free_space_large(size_t size)
 	if ((new_memory = mmap(0, map_size, PROT_READ | PROT_WRITE,
 		MAP_ANON | MAP_PRIVATE, -1, 0)) == MAP_FAILED)
 		return (NULL);
-//	pthread_mutex_lock(&g_mutex);
+	pthread_mutex_lock(&g_mutex);
 	header = (t_large_header*)new_memory;
 	header->size = map_size;
 	new_large = (t_block_list*)(new_memory + sizeof(t_large_header));
 	new_large->next = global->large;
 	global->large = new_large;
-//	pthread_mutex_unlock(&g_mutex);
-//	if (getenv("MallocVerbose") != NULL)
-//		print_large_ex(header);
+	if (g_env.large == 1)
+		print_large_ex(header);
+	pthread_mutex_unlock(&g_mutex);
 	return (new_memory + sizeof(t_block_list) + sizeof(t_large_header));
 }

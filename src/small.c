@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/17 15:11:26 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/01 17:10:12 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/04 14:22:06 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 #include <sys/mman.h>
 #include <signal.h>
 #include <pthread.h>
-
-extern void				*g_global_memory;
-//extern pthread_mutex_t	g_mutex;
 
 void			add_to_small_list(t_block_list *list, void *new_memory)
 {
@@ -55,7 +52,7 @@ void			*go_to_next_block(size_t size, t_block_list *begin)
 {
 	if (begin->next == NULL)
 		expand_small();
-//	pthread_mutex_unlock(&g_mutex);
+	pthread_mutex_unlock(&g_mutex);
 	return (get_free_space_small(size, begin->next,
 			((t_global_header*)g_global_memory)->small_size - sizeof(*begin)));
 }
@@ -69,7 +66,7 @@ void			*get_free_space_small(size_t size, t_block_list *begin,
 	current_place = 0;
 	if (begin == NULL)
 		return (NULL);
-//	pthread_mutex_lock(&g_mutex);
+	pthread_mutex_lock(&g_mutex);
 	header = (t_small_header*)(begin + 1);
 	while (!header->free || header->size < (int)size)
 	{
@@ -83,8 +80,8 @@ void			*get_free_space_small(size_t size, t_block_list *begin,
 	}
 	header->free = 0;
 	header = cut_block(header, size);
-//	if (getenv("MallocVerbose") != NULL)
-//		print_zone_ex(header);
-//	pthread_mutex_unlock(&g_mutex);
+	if (g_env.small == 1)
+		print_zone_ex(header);
+	pthread_mutex_unlock(&g_mutex);
 	return ((void*)(header + 1));
 }
