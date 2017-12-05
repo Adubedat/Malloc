@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/16 16:58:15 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/01 15:32:01 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/05 21:39:04 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ void	print_byte(unsigned char byte)
 	char	*b;
 
 	b = "0123456789abcdef";
-
 	ft_putchar(' ');
 	ft_putchar(b[byte / 16]);
 	ft_putchar(b[byte % 16]);

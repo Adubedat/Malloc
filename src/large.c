@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/24 18:27:11 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/04 19:43:11 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/05 18:32:24 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	*get_free_space_large(size_t size)
 	new_large = (t_block_list*)(new_memory + sizeof(t_large_header));
 	new_large->next = global->large;
 	global->large = new_large;
-	if (g_env.large == 1)
+	if (g_env.verbose == 1)
 		print_large_ex(header);
 	pthread_mutex_unlock(&g_mutex);
 	return (new_memory + sizeof(t_block_list) + sizeof(t_large_header));

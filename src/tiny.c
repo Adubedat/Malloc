@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/17 15:11:26 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/04 19:42:52 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/05 18:31:33 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void			*get_free_space_tiny(int size, t_block_list *begin,
 	}
 	header->free = 0;
 	header = cut_block(header, size);
-	if (g_env.tiny == 1)
+	if (g_env.verbose == 1)
 		print_zone_ex(header);
 	pthread_mutex_unlock(&g_mutex);
 	return ((void*)(header + 1));

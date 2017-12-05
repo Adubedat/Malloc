@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 19:27:29 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/04 21:21:07 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/05 18:24:29 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ void	*realloc_small_tiny(void *ptr, size_t size)
 	void			*memory;
 
 	header = (t_small_header*)(ptr - sizeof(t_small_header));
+	if (header->canary != CANARY)
+		return (NULL);
 	if (header->size > TINY_SIZE && size <= TINY_SIZE)
 	{
 		memory = malloc(size);
@@ -65,11 +67,14 @@ void	*realloc(void *ptr, size_t size)
 {
 	void	*memory;
 
-	ft_putstr("Realloc called for pointer ");
-	print_addr(ptr);
-	ft_putstr(" and size ");
-	ft_putnbr(size);
-	ft_putchar('\n');
+	if (g_env.verbose == 1)
+	{
+		ft_putstr("Realloc called for pointer ");
+		print_addr(ptr);
+		ft_putstr(" and size ");
+		ft_putnbr(size);
+		ft_putchar('\n');
+	}
 	if (ptr == NULL)
 		memory = malloc(size);
 	else if (ptr != NULL && size == 0)
@@ -79,7 +84,9 @@ void	*realloc(void *ptr, size_t size)
 	}
 	else if (is_large(ptr))
 		memory = realloc_large(ptr, size);
-	else
+	else if (is_mine(ptr))
 		memory = realloc_small_tiny(ptr, size);
+	else
+		memory = NULL;
 	return (memory);
 }

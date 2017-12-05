@@ -6,7 +6,7 @@
 #    By: adubedat <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/04/23 17:07:31 by adubedat          #+#    #+#              #
-#    Updated: 2017/12/01 16:56:20 by adubedat         ###   ########.fr        #
+#    Updated: 2017/12/05 17:41:49 by adubedat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,6 +43,7 @@ SRC_NAME =	malloc.c \
 			defragmentation.c \
 			realloc.c \
 			show_alloc.c \
+			print.c
 
 OBJ_NAME = $(SRC_NAME:.c=.o)
 

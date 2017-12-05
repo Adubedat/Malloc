@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/23 13:22:43 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/01 14:58:43 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/05 21:39:47 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,6 @@ char				*ft_putwstr(wchar_t *str, int precision);
 char				*ft_strjoin_free_both(char const *s1, char const *s2);
 void				ft_hexdump(void *memory, int len);
 void				print_addr(void *ptr);
-void				ft_putnbr_hexa(unsigned long int);
+void				ft_putnbr_hexa(unsigned long int n);
 
 #endif

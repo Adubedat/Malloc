@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/27 12:34:37 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/04 21:50:54 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/05 21:54:37 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ void	tiny_defragmentation(t_small_header *header)
 	t_block_list	*temp;
 	size_t			current_place;
 
+	header->free = 1;
 	global = (t_global_header*)g_global_memory;
 	temp = global->tiny;
 	while ((temp != NULL) && ((void*)header - (void*)temp < 0
@@ -120,11 +121,7 @@ void	free(void *ptr)
 	t_small_header	*header;
 
 	if (g_env.scribble == 1)
-	{
-		ft_putstr("Free called for pointer ");
-		print_addr(ptr);
-		ft_putchar('\n');
-	}
+		print_free(ptr);
 	if (ptr == NULL)
 		return ;
 	pthread_mutex_lock(&g_mutex);
@@ -133,7 +130,11 @@ void	free(void *ptr)
 	else if (is_mine(ptr))
 	{
 		header = (t_small_header*)(ptr - sizeof(t_small_header));
-		header->free = 1;
+		if (header->canary != CANARY)
+		{
+			pthread_mutex_unlock(&g_mutex);
+			return ;
+		}
 		tiny_defragmentation(header);
 	}
 	else

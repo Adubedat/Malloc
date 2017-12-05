@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:00:19 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/04 19:42:20 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/05 21:41:21 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,15 @@ void			*g_global_memory = NULL;
 pthread_mutex_t	g_mutex = PTHREAD_MUTEX_INITIALIZER;
 t_env			g_env = {
 	.env = 0,
-	.tiny = 0,
-	.small = 0,
-	.large = 0,
+	.verbose = 0,
 	.scribble = 0,
 };
 
-void	init_env_variable()
+void	init_env_variable(void)
 {
 	g_env.env = 1;
-	if (getenv("MallocTinyVerbose"))
-		g_env.tiny = 1;
-	if (getenv("MallocSmallVerbose"))
-		g_env.small = 1;
-	if (getenv("MallocLargeVerbose"))
-		g_env.large = 1;
+	if (getenv("MyMallocVerbose"))
+		g_env.verbose = 1;
 	if (getenv("MyMallocScribble"))
 		g_env.scribble = 1;
 }
@@ -41,9 +35,8 @@ void	*malloc(size_t size)
 {
 	t_global_header	*global;
 
-	if (g_env.env == 0) {
+	if (g_env.env == 0)
 		init_env_variable();
-	}
 	if (g_global_memory == NULL)
 		init_global_memory();
 	if ((global = (t_global_header*)g_global_memory) == NULL)

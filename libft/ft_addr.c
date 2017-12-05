@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/31 23:23:21 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/01 14:58:14 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/05 21:38:40 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char	*ft_addr(void *v)
 	return (str);
 }
 
-void	print_addr(void	*ptr)
+void	print_addr(void *ptr)
 {
 	unsigned long int	nbr;
 

@@ -6,14 +6,13 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/17 15:11:26 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/04 14:22:06 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/05 18:32:07 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 #include <sys/mman.h>
 #include <signal.h>
-#include <pthread.h>
 
 void			add_to_small_list(t_block_list *list, void *new_memory)
 {
@@ -80,7 +79,7 @@ void			*get_free_space_small(size_t size, t_block_list *begin,
 	}
 	header->free = 0;
 	header = cut_block(header, size);
-	if (g_env.small == 1)
+	if (g_env.verbose == 1)
 		print_zone_ex(header);
 	pthread_mutex_unlock(&g_mutex);
 	return ((void*)(header + 1));

@@ -6,7 +6,7 @@
 /*   By: adubedat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/21 14:04:48 by adubedat          #+#    #+#             */
-/*   Updated: 2017/12/04 19:41:46 by adubedat         ###   ########.fr       */
+/*   Updated: 2017/12/05 21:54:31 by adubedat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,7 @@ typedef struct				s_global_header
 typedef struct				s_env
 {
 	uint8_t					env;
-	uint8_t					tiny;
-	uint8_t					small;
-	uint8_t					large;
+	uint8_t					verbose;
 	uint8_t					scribble;
 }							t_env;
 
@@ -85,6 +83,11 @@ void						defrag_right(t_small_header *header);
 void						defrag_both(t_small_header *header,
 		size_t current_place);
 int							is_large(void *ptr);
+int							is_mine(void *ptr);
 void						print_zone_ex(t_small_header *header);
+void						print_alloc(void *start, void *end, size_t size);
+void						print_large(void *ptr);
+void						print_total(size_t total);
+void						print_free(void *ptr);
 
 #endif
